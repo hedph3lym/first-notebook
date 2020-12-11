@@ -1,0 +1,83 @@
+---
+output_dir: "."
+title: "RNotebookExample"
+output: html_document
+---
+
+```{r load-data, message=FALSE}
+# This is a R code chunk, it allows you to use R inside a RMarkdown document, you can type code here as in a regular script
+
+# load tidyverse
+library(tidyverse)
+library(kableExtra) # used for kbl()
+library(rmarkdown) #used for paged_table()
+library(ggpubr) # to use ggarrange()
+
+# read csv file into R
+pop_data <- read_csv("data/gapminder_data.csv")
+
+# create a table with data from EU countries in 2007 and order by life expectancy
+
+euro_data_tbl <- pop_data %>% 
+  filter(continent == "Europe" & year == 2007) %>% 
+  select(-continent, -year) %>% 
+  arrange(desc(lifeExp)) %>% 
+  rename("Country" = country, "Population size" = pop, "Life expectancy" =  lifeExp, "GDP" = gdpPercap)
+
+```
+
+The results in `euro_data_tbl` are displayed in the Table below
+
+```{r kbl-table, message=FALSE}
+
+euro_data_tbl %>% 
+  kbl() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", full_width = F)) %>% 
+  scroll_box(width = "100%", height= "200px")
+
+```
+
+This is a better way to display long tables:
+```{r paged-table, message=FALSE}
+paged_table(euro_data_tbl)
+```
+
+# Adding Images
+
+```{r create-table, message=FALSE}
+# keep EU data and change year to factor
+euro_data_fig <-  pop_data %>% 
+  filter(continent == "Europe") %>% 
+  mutate(year=as.factor(year))
+
+# keep UK data only
+uk_data_fig <- pop_data %>% 
+  filter(country == "United Kingdom") %>% 
+  mutate(year=as.factor(year))
+```
+
+The life expectancy in EU is plotted as following:
+
+```{r euro-plot, message=FALSE}
+euro_plot <- euro_data_fig %>% 
+  ggplot(aes(x=year, y=lifeExp)) +
+  geom_violin() +
+  stat_summary(fun = median, geom = "point")
+
+# draw euro plot
+euro_plot
+```
+
+```{r uk-plot, message=FALSE, }
+uk_plot <- uk_data_fig %>% 
+  ggplot(aes(x=year, y=lifeExp)) +
+  geom_point()
+
+uk_plot
+
+# plot EU and UK plots together
+ggarrange(euro_plot, uk_plot, ncol= 2, nrow= 1, labels="AUTO")
+```
+
+
+

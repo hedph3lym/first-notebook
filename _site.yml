@@ -1,0 +1,9 @@
+output_dir: "."
+name: "My Website"
+navbar:
+  title: "My Notebook"
+  left:
+    - text: "Analysis"
+      href: RNotebookExample.html
+    - text: "Markdown"
+      href: index.html
