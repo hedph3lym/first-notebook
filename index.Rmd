@@ -13,8 +13,6 @@ output:
 <!-- link-citations: yes  -->
 ---
 
-
-# In RMarkdown "#" is not a comment
 <!-- This is a comment, and will not show up in the notebook -->
 
 <!-- Headings -->
